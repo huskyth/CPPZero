@@ -30,6 +30,10 @@ cd build
 cmake .. -DCMAKE_PREFIX_PATH=path/to/libtorch -DPYTHON_EXECUTABLE=path/to/python -DCMAKE_BUILD_TYPE=Release
 make -j10
 
+# 我的mac下使用这个编译通过了，添加了DCMAKE_OSX_ARCHITECTURES
+cmake .. -DCMAKE_PREFIX_PATH=/Users/tenghao/Downloads/libtorch -DPYTHON_EXECUTABLE=/Users/tenghao/opt/anaconda3/envs/u3d/bin/python -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=x86_64
+
+
 # Run
 cd ../test
 python learner_test.py train # train model

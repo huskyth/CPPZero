@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.8.0)
-set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_CXX_STANDARD 17)
 
 project(library)
 
 # option
 option(WRAP_LIB "wrap library" ON)
-option(UNIT_TEST "unit test" OFF)
+option(UNIT_TEST "unit test" ON)
 
 # gcc
 if(CMAKE_COMPILER_IS_GNUCC)
@@ -21,18 +21,23 @@ find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
 
 # find python
-find_package(PythonLibs 3.6 REQUIRED)
+find_package(PythonLibs 3.7 REQUIRED)
 include_directories(${PYTHON_INCLUDE_PATH})
 
 # add sources
 include_directories(./src)
 aux_source_directory(./src SOURCES)
 
+
+
 # swig
 if(WRAP_LIB)
     set_property(SOURCE ./src/library.i PROPERTY CPLUSPLUS ON)
-    swig_add_library(library TYPE SHARED LANGUAGE python SOURCES ./src/library.i ${SOURCES})
+    swig_add_library(library LANGUAGE python SOURCES ./src/library.i ${SOURCES})
     swig_link_libraries(library ${PYTHON_LIBRARIES} ${TORCH_LIBRARIES})
+    message(WARNING, "TORCH_LIBRARIES = ${TORCH_LIBRARIES}")
+    # add_library(library ${SOURCES})
+    # set_target_properties(library PROPERTIES SUFFIX ".so")
 endif()
 
 # unit test
@@ -52,3 +57,4 @@ if(UNIT_TEST)
     add_executable(mcts_test ./test/mcts_test.cpp)
     target_link_libraries(mcts_test test_lib)
 endif()
+
