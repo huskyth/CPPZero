@@ -10,7 +10,7 @@ option(UNIT_TEST "unit test" OFF)
 
 # gcc
 if(CMAKE_COMPILER_IS_GNUCC)
-    set(CMAKE_CXX_STANDARD 14)
+    set(CMAKE_CXX_STANDARD 17)
 endif()
 
 # find torch
