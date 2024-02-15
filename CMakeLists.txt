@@ -6,7 +6,7 @@ project(library)
 
 # option
 option(WRAP_LIB "wrap library" ON)
-option(UNIT_TEST "unit test" ON)
+option(UNIT_TEST "unit test" OFF)
 
 # gcc
 if(CMAKE_COMPILER_IS_GNUCC)
