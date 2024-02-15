@@ -33,7 +33,7 @@ aux_source_directory(./src SOURCES)
 # swig
 if(WRAP_LIB)
     set_property(SOURCE ./src/library.i PROPERTY CPLUSPLUS ON)
-    swig_add_library(library LANGUAGE python SOURCES ./src/library.i ${SOURCES})
+    swig_add_library(library TYPE SHARED LANGUAGE python SOURCES ./src/library.i ${SOURCES})
     swig_link_libraries(library ${PYTHON_LIBRARIES} ${TORCH_LIBRARIES})
     message(WARNING, "TORCH_LIBRARIES = ${TORCH_LIBRARIES}")
     # add_library(library ${SOURCES})
