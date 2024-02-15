@@ -33,6 +33,11 @@ make -j10
 # 我的mac下使用这个编译通过了，添加了DCMAKE_OSX_ARCHITECTURES
 cmake .. -DCMAKE_PREFIX_PATH=/Users/tenghao/Downloads/libtorch -DPYTHON_EXECUTABLE=/Users/tenghao/opt/anaconda3/envs/u3d/bin/python -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=x86_64
 
+# https://blog.csdn.net/Felaim/article/details/105832560
+# 可以查看PYTHON_LIBRARIES和PYTHON_INCLUDE_DIRS
+# kaggle中这样可以编译通过
+!cmake .. -DCMAKE_PREFIX_PATH=/opt/conda/lib/python3.10/site-packages/torch/share/cmake -DPYTHON_EXECUTABLE=/opt/conda/bin/python  -DCMAKE_BUILD_TYPE=Release -DPYTHON_LIBRARY=/opt/conda/lib -DPYTHON_INCLUDE_DIR=/opt/conda/include/python3.10
+
 
 # Run
 cd ../test
