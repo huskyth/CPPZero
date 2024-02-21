@@ -5,11 +5,11 @@
 
 int main(){
     WMChess wm(7, 1);
-    WMChess::board_type board_temp = {1,1,0,0,0,0,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0};
+    // WMChess::board_type board_temp = {1,1,0,0,0,0,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0};
 
-    wm.set_board(board_temp);
-    std::vector<int> result = wm.get_game_status();
-    std::cout << "is end " << result[0] << " winner " << result[1] << std::endl;
+    // wm.set_board(board_temp);
+    // std::vector<int> result = wm.get_game_status();
+    // std::cout << "is end " << result[0] << " winner " << result[1] << std::endl;
 
 
     // std::cout << "from " << wm.get_last_move().first << " to " << wm.get_last_move().second << std::endl;
@@ -27,8 +27,15 @@ int main(){
 //    WMChess::move_type move =  wm.get_move_from_index(10);
 //    std::cout << move.first << "," << move.second << std::endl;
 
+//    int move =  wm.get_move_from_string("20_16");
+//    std::cout << move << std::endl;
+
+    std::vector<int> temp = wm.get_legal_moves();
+    for (unsigned int i=0;i<temp.size();i++){
+        std::cout << "index = " << i << ", value = " << temp[i] << std::endl;
+
+    }
 
 
-
-    return 0;
+   return 0;
 }

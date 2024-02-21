@@ -3,6 +3,8 @@
 WMChess::WMChess(unsigned int n, int first_color)
     : n(n), cur_color(first_color), last_move(std::make_pair(-1, -1)){
   this->board = {1, 1, 1, 1, 1, 0, 0, -1, 1, 0, 0, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0};
+  this->get_distance();
+  this->init_move_index_tuple();
 }
 //TODO:board的网络形式需要再修改
 
@@ -115,4 +117,25 @@ std::vector<int> WMChess::get_game_status() {
 
 void WMChess::set_board(board_type board){
     this->board = board;
+}
+
+std::vector<int> WMChess::get_legal_moves(){
+    //TODO:  这里是否需要将正负选手区分开
+    int size_of_moves = this->move_index_tuple.size();
+    std::vector<int> legal_moves_list = std::vector<int>(size_of_moves, 0);
+    for (unsigned int from_point_idx = 0;from_point_idx < this->board.size();from_point_idx++){
+        int chessman = this->board[from_point_idx];
+        if (chessman == 0) continue;
+        std::vector<int> to_point_idx_list = this->getNeighboors(from_point_idx);
+        for(unsigned int i=0;i < to_point_idx_list.size();i++){
+            int to_point_idx = to_point_idx_list[i];
+            int to_point = this->board[to_point_idx];
+            if(to_point!=0){
+                continue;
+            }
+            std::string temp = std::to_string(from_point_idx) + "_" + std::to_string(to_point_idx);;
+            legal_moves_list[(this->get_move_from_string(temp))] = chessman;
+        }
+    }
+    return legal_moves_list;
 }

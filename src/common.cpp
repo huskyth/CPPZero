@@ -39,8 +39,6 @@ std::vector<std::vector<int>> transfer(std::string x){
 
 
     }
-
-    std :: cout << n << std :: endl;
     return result;
 
 }
