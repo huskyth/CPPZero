@@ -84,3 +84,35 @@ WMChess::board_type WMChess::shiftOutChessman(board_type board) {
     }
     return board;
 }
+
+std::vector<int> WMChess::get_game_status() {
+  // return (is ended, winner)
+    int black_num = 0;
+    int white_num = 0;
+    int winner = 0;
+    std::vector<int> result = std::vector<int>(0,0);
+    for (unsigned int i = 0;i < board.size();i++){
+        int color = board[i];
+          if (color == BLACK){
+                black_num += 1;
+          }
+            else if (color == WHITE){
+                white_num += 1;
+            }
+    }
+    if (black_num < 3 || white_num < 3){
+        if (black_num < 3){
+            winner = WHITE;
+        }
+        else{
+            winner = BLACK;
+        }
+    }
+    result.push_back( winner ==0 ? 0:1);
+    result.push_back(winner);
+    return result;
+}
+
+void WMChess::set_board(board_type board){
+    this->board = board;
+}
