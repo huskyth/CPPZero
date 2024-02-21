@@ -133,8 +133,9 @@ std::vector<int> WMChess::get_legal_moves(){
             if(to_point!=0){
                 continue;
             }
-            std::string temp = std::to_string(from_point_idx) + "_" + std::to_string(to_point_idx);;
-            legal_moves_list[(this->get_move_from_string(temp))] = chessman;
+            std::string temp = std::to_string(from_point_idx) + "_" + std::to_string(to_point_idx);
+            //TODO:暂时改成1，后期估计要修改
+            legal_moves_list[(this->get_move_from_string(temp))] = 1;
         }
     }
     return legal_moves_list;

@@ -17,6 +17,8 @@ public:
   inline board_type get_board() const { return this->board; }
   inline move_type get_last_move() const { return this->last_move; }
   inline int get_current_color() const { return this->cur_color; }
+  inline unsigned int get_action_size() const { return 72; }
+
   inline std::vector<std::vector<int>> get_distance(){ 
     if (this -> distance.size() == 0){
         this->distance = read_from_file("/Users/husky/CPPZero/src/distance.txt");
