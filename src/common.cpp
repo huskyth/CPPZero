@@ -52,7 +52,6 @@ std::vector<std::vector<int>>  read_from_file(std::string path)
 	{ 
 	}
     auto result = transfer(x);
-    two_dimension_vector_print(result);
 	srcFile.close();
     return result;
 }
