@@ -252,7 +252,7 @@ void MCTS::simulate(std::shared_ptr<WMChess> game) {
 
     // select
     auto action = node->select(this->c_puct, this->c_virtual_loss);
-    game->execute_move(action);
+    game->execute_move(game->get_move_from_index(action));
     node = node->children[action];
   }
 

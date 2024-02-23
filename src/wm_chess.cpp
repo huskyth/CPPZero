@@ -140,3 +140,17 @@ std::vector<int> WMChess::get_legal_moves(){
     }
     return legal_moves_list;
 }
+
+WMChess::input_board_type WMChess::transfer(){
+    assert(this->board.size() == 21);
+    std::vector<std::vector<int>> result = std::vector<std::vector<int>>(7, std::vector<int>(7, 0));
+    for(unsigned int i = 0;i < board.size(); i++){
+        int chessman = board[i];
+        auto e_c = ARRAY_TO_IMAGE[i];
+        int row = e_c.first;
+        int column = e_c.second;
+        result [row][column] = chessman;
+    }
+    return result;
+}
+

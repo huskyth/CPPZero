@@ -47,7 +47,8 @@ std::future<NeuralNetwork::return_type> NeuralNetwork::commit(WMChess* wm_chess)
   torch::Tensor state0 = temp.gt(0).toType(torch::kFloat32);
   torch::Tensor state1 = temp.lt(0).toType(torch::kFloat32);
 
-  int last_move = wm_chess->get_last_move();
+  int last_move = wm_chess->get_move_from_move(wm_chess->get_last_move());
+  
   int cur_player = wm_chess->get_current_color();
 
   if (cur_player == -1) {

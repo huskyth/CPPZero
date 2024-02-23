@@ -9,12 +9,22 @@ class WMChess {
 public:
   const int WHITE = -1;
   const int BLACK = 1;
+  std::map<unsigned int, std::pair<int,int>> ARRAY_TO_IMAGE {
+    {0, std::make_pair(0, 3)}, {15, std::make_pair(6, 3)}, {6, std::make_pair(3, 0)}, {10, std::make_pair(3, 6)},
+    {1, std::make_pair(0, 2)}, {3, std::make_pair(0, 4)}, {2, std::make_pair(1, 3)},
+    {4, std::make_pair(2, 0)}, {7, std::make_pair(4, 0)}, {5, std::make_pair(3, 1)},
+    {8, std::make_pair(2, 6)}, {9, std::make_pair(3, 5)}, {11, std::make_pair(4, 6)},
+    {12, std::make_pair(5, 3)}, {13, std::make_pair(6, 2)}, {14, std::make_pair(6, 4)},
+    {20,std::make_pair(3, 3)},
+    {16,std::make_pair(2, 3)}, {17, std::make_pair(3, 2)}, {18, std::make_pair(3, 4)}, {19, std::make_pair(4, 3)}
+};
 
   using move_type=std::pair<int, int>;
   using board_type = std::vector<int>;
+  using input_board_type = std::vector<std::vector<int>>;
   WMChess(unsigned int n, int first_color);
   inline unsigned int get_n() const { return this->n; }
-  inline board_type get_board() const { return this->board; }
+  inline input_board_type get_board() { return this->transfer(); }
   inline move_type get_last_move() const { return this->last_move; }
   inline int get_current_color() const { return this->cur_color; }
   inline unsigned int get_action_size() const { return 72; }
@@ -45,6 +55,14 @@ public:
     return this->move_string_index[move]; 
   }
 
+  inline int get_move_from_move(move_type move) {
+    std::string temp = std::to_string(move.first) + "_" + std::to_string(move.second);
+    if(this->move_string_index.size()==0){
+        this->init_move_index_tuple();
+    }
+    return this->move_string_index[temp]; 
+  }
+
   inline move_type get_move_from_index(int id) {
     if(this->move_index_tuple.size()==0){
         this->init_move_index_tuple();
@@ -63,6 +81,7 @@ public:
   std::vector<int> get_game_status();
   void set_board(board_type board);
   std::vector<int> get_legal_moves();
+  input_board_type transfer();
 
 private:
 

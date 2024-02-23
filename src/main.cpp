@@ -30,11 +30,13 @@ int main(){
 //    int move =  wm.get_move_from_string("20_16");
 //    std::cout << move << std::endl;
 
-    std::vector<int> temp = wm.get_legal_moves();
-    for (unsigned int i=0;i<temp.size();i++){
-        std::cout << "index = " << i << ", value = " << temp[i] << std::endl;
+    // std::vector<int> temp = wm.get_legal_moves();
+    // for (unsigned int i=0;i<temp.size();i++){
+    //     std::cout << "index = " << i << ", value = " << temp[i] << std::endl;
 
-    }
+    // }
+
+    two_dimension_vector_print(wm.get_board());
 
 
    return 0;
