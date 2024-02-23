@@ -185,13 +185,13 @@ void MCTS::tree_deleter(TreeNode *t) {
   delete t;
 }
 
-std::vector<double> MCTS::get_action_probs(Gomoku *gomoku, double temp) {
+std::vector<double> MCTS::get_action_probs(WMChess *wm_chess, double temp) {
   // submit simulate tasks to thread_pool
   std::vector<std::future<void>> futures;
 
   for (unsigned int i = 0; i < this->num_mcts_sims; i++) {
-    // copy gomoku
-    auto game = std::make_shared<Gomoku>(*gomoku);
+    // copy wm_chess
+    auto game = std::make_shared<WMChess>(*wm_chess);
     auto future =
         this->thread_pool->commit(std::bind(&MCTS::simulate, this, game));
 
@@ -205,7 +205,7 @@ std::vector<double> MCTS::get_action_probs(Gomoku *gomoku, double temp) {
   }
 
   // calculate probs
-  std::vector<double> action_probs(gomoku->get_action_size(), 0);
+  std::vector<double> action_probs(wm_chess->get_action_size(), 0);
   const auto &children = this->root->children;
 
   // greedy
@@ -241,7 +241,7 @@ std::vector<double> MCTS::get_action_probs(Gomoku *gomoku, double temp) {
   }
 }
 
-void MCTS::simulate(std::shared_ptr<Gomoku> game) {
+void MCTS::simulate(std::shared_ptr<WMChess> game) {
   // execute one simulation
   auto node = this->root.get();
 

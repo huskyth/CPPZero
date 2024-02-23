@@ -6,7 +6,7 @@
 #include <thread>
 #include <atomic>
 
-#include <gomoku.h>
+#include <wm_chess.h>
 #include <thread_pool.h>
 #include <libtorch.h>
 
@@ -47,11 +47,11 @@ class MCTS {
   MCTS(NeuralNetwork *neural_network, unsigned int thread_num, double c_puct,
        unsigned int num_mcts_sims, double c_virtual_loss,
        unsigned int action_size);
-  std::vector<double> get_action_probs(Gomoku *gomoku, double temp = 1e-3);
+  std::vector<double> get_action_probs(WMChess *wm_chess, double temp = 1e-3);
   void update_with_move(int last_move);
 
  private:
-  void simulate(std::shared_ptr<Gomoku> game);
+  void simulate(std::shared_ptr<WMChess> game);
   static void tree_deleter(TreeNode *t);
 
   // variables

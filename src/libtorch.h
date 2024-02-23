@@ -9,7 +9,7 @@
 #include <utility>
 #include <vector>
 
-#include <gomoku.h>
+#include <wm_chess.h>
 
 class NeuralNetwork {
  public:
@@ -18,7 +18,7 @@ class NeuralNetwork {
   NeuralNetwork(std::string model_path, bool use_gpu, unsigned int batch_size);
   ~NeuralNetwork();
 
-  std::future<return_type> commit(Gomoku* gomoku);  // commit task to queue
+  std::future<return_type> commit(WMChess* wm_chess);  // commit task to queue
   void set_batch_size(unsigned int batch_size) {    // set batch_size
     this->batch_size = batch_size;
   };

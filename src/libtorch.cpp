@@ -31,11 +31,11 @@ NeuralNetwork::~NeuralNetwork() {
   this->loop->join();
 }
 
-std::future<NeuralNetwork::return_type> NeuralNetwork::commit(Gomoku* gomoku) {
-  int n = gomoku->get_n();
+std::future<NeuralNetwork::return_type> NeuralNetwork::commit(WMChess* wm_chess) {
+  int n = wm_chess->get_n();
 
   // convert data format
-  auto board = gomoku->get_board();
+  auto board = wm_chess->get_board();
   std::vector<int> board0;
   for (unsigned int i = 0; i < board.size(); i++) {
     board0.insert(board0.end(), board[i].begin(), board[i].end());
@@ -47,8 +47,8 @@ std::future<NeuralNetwork::return_type> NeuralNetwork::commit(Gomoku* gomoku) {
   torch::Tensor state0 = temp.gt(0).toType(torch::kFloat32);
   torch::Tensor state1 = temp.lt(0).toType(torch::kFloat32);
 
-  int last_move = gomoku->get_last_move();
-  int cur_player = gomoku->get_current_color();
+  int last_move = wm_chess->get_last_move();
+  int cur_player = wm_chess->get_current_color();
 
   if (cur_player == -1) {
     std::swap(state0, state1);
