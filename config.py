@@ -1,6 +1,6 @@
 config = {
     # gomoku
-    'n': 15,                                    # board size
+    'n': 7,                                    # board size
     'n_in_row': 5,                              # n in row
     'use_gui': True,                           # show gomoku gui in training mode
 

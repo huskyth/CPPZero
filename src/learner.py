@@ -11,7 +11,7 @@ from functools import reduce
 
 import sys
 sys.path.append('../build')
-from library import MCTS, Gomoku, NeuralNetwork
+from library import MCTS, WMChess, NeuralNetwork
 
 from neural_network import NeuralNetWorkWrapper
 from gomoku_gui import GomokuGUI
@@ -28,7 +28,7 @@ def tuple_2d_to_numpy_2d(tuple_2d):
 class Leaner():
     def __init__(self, config):
         # see config.py
-        # gomoku
+        # WMChess
         self.n = config['n']
         self.n_in_row = config['n_in_row']
         self.use_gui = config['use_gui']
@@ -146,7 +146,7 @@ class Leaner():
         players = [player2, None, player1]
         player_index = 1
 
-        gomoku = Gomoku(self.n, self.n_in_row, first_color)
+        wm_chess = WMChess(self.n, first_color)
 
         if show:
             self.gomoku_gui.reset_status()
@@ -158,21 +158,21 @@ class Leaner():
 
             # get action prob
             if episode_step <= self.num_explore:
-                prob = np.array(list(player.get_action_probs(gomoku, self.temp)))
+                prob = np.array(list(player.get_action_probs(wm_chess, self.temp)))
             else:
-                prob = np.array(list(player.get_action_probs(gomoku, 0)))
+                prob = np.array(list(player.get_action_probs(wm_chess, 0)))
 
             # generate sample
-            board = tuple_2d_to_numpy_2d(gomoku.get_board())
-            last_action = gomoku.get_last_move()
-            cur_player = gomoku.get_current_color()
+            board = tuple_2d_to_numpy_2d(wm_chess.get_board())
+            last_action = wm_chess.get_last_move()
+            cur_player = wm_chess.get_current_color()
 
             sym = self.get_symmetries(board, prob, last_action)
             for b, p, a in sym:
                 train_examples.append([b, a, cur_player, p])
 
             # dirichlet noise
-            legal_moves = list(gomoku.get_legal_moves())
+            legal_moves = list(wm_chess.get_legal_moves())
             noise = 0.1 * np.random.dirichlet(self.dirichlet_alpha * np.ones(np.count_nonzero(legal_moves)))
 
             prob = 0.9 * prob
@@ -188,7 +188,7 @@ class Leaner():
 
             if show:
                 self.gomoku_gui.execute_move(cur_player, action)
-            gomoku.execute_move(action)
+            wm_chess.execute_move(action)
             player1.update_with_move(action)
             player2.update_with_move(action)
 
@@ -196,7 +196,7 @@ class Leaner():
             player_index = -player_index
 
             # is ended
-            ended, winner = gomoku.get_game_status()
+            ended, winner = wm_chess.get_game_status()
             if ended == 1:
                 # b, last_action, cur_player, p, v
                 return [(x[0], x[1], x[2], x[3], x[2] * winner) for x in train_examples]
@@ -232,7 +232,7 @@ class Leaner():
         # prepare
         players = [player2, None, player1]
         player_index = first_player
-        gomoku = Gomoku(self.n, self.n_in_row, first_player)
+        wm_chess = WMChess(self.n, first_player)
         if show:
             self.gomoku_gui.reset_status()
 
@@ -241,16 +241,16 @@ class Leaner():
             player = players[player_index + 1]
 
             # select best move
-            prob = player.get_action_probs(gomoku)
+            prob = player.get_action_probs(wm_chess)
             best_move = int(np.argmax(np.array(list(prob))))
 
             # execute move
-            gomoku.execute_move(best_move)
+            wm_chess.execute_move(best_move)
             if show:
                 self.gomoku_gui.execute_move(player_index, best_move)
 
             # check game status
-            ended, winner = gomoku.get_game_status()
+            ended, winner = wm_chess.get_game_status()
             if ended == 1:
                 return winner
 
@@ -283,7 +283,7 @@ class Leaner():
         return l
 
     def play_with_human(self, human_first=True, checkpoint_name="best_checkpoint"):
-        # gomoku gui
+        # wm_chess gui
         t = threading.Thread(target=self.gomoku_gui.loop)
         t.start()
 
@@ -292,9 +292,9 @@ class Leaner():
         mcts_best = MCTS(libtorch_best, self.num_mcts_threads * 3, \
              self.c_puct, self.num_mcts_sims * 6, self.c_virtual_loss, self.action_size)
 
-        # create gomoku game
+        # create wm_chess game
         human_color = self.gomoku_gui.get_human_color()
-        gomoku = Gomoku(self.n, self.n_in_row, human_color if human_first else -human_color)
+        wm_chess = wm_chess(self.n, human_color if human_first else -human_color)
 
         players = ["alpha", None, "human"] if human_color == 1 else ["human", None, "alpha"]
         player_index = human_color if human_first else -human_color
@@ -306,7 +306,7 @@ class Leaner():
 
             # select move
             if player == "alpha":
-                prob = mcts_best.get_action_probs(gomoku)
+                prob = mcts_best.get_action_probs(wm_chess)
                 best_move = int(np.argmax(np.array(list(prob))))
                 self.gomoku_gui.execute_move(player_index, best_move)
             else:
@@ -317,10 +317,10 @@ class Leaner():
                 best_move = self.gomoku_gui.get_human_move()
 
             # execute move
-            gomoku.execute_move(best_move)
+            wm_chess.execute_move(best_move)
 
             # check game status
-            ended, winner = gomoku.get_game_status()
+            ended, winner = wm_chess.get_game_status()
             if ended == 1:
                 break
 
