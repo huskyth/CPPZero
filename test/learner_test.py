@@ -1,7 +1,11 @@
 # coding: utf-8
 import sys
+
+from common import ROOT_PATH
+
 sys.path.append('..')
-sys.path.append('../src')
+sys.path.append(str(ROOT_PATH / 'src'))
+sys.path.append(str(ROOT_PATH / "build"))
 
 import learner
 import config

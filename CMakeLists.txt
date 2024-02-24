@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.8.0)
 
 set(CMAKE_CXX_STANDARD 17)
-
+set(PYTHON_INCLUDE_DIR /home/husky/miniconda3/envs/mcts/include/python3.11)
+set(PYTHON_LIBRARY /home/husky/miniconda3/envs/mcts/lib)
+set(CMAKE_PREFIX_PATH /home/husky/miniconda3/envs/mcts/lib/python3.11/site-packages/torch/share/cmake)
 project(library)
 
 # option
@@ -36,8 +38,6 @@ if(WRAP_LIB)
     swig_add_library(library TYPE SHARED LANGUAGE python SOURCES ./src/library.i ${SOURCES})
     swig_link_libraries(library ${PYTHON_LIBRARIES} ${TORCH_LIBRARIES})
     message(WARNING, "TORCH_LIBRARIES = ${TORCH_LIBRARIES}")
-    # add_library(library ${SOURCES})
-    # set_target_properties(library PROPERTIES SUFFIX ".so")
 endif()
 
 # unit test

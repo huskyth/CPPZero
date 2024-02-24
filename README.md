@@ -31,7 +31,7 @@ cmake .. -DCMAKE_PREFIX_PATH=path/to/libtorch -DPYTHON_EXECUTABLE=path/to/python
 make -j10
 
 # 我的mac下使用这个编译通过了，添加了DCMAKE_OSX_ARCHITECTURES
-cmake .. -DCMAKE_PREFIX_PATH=/Users/tenghao/Downloads/libtorch -DPYTHON_EXECUTABLE=/Users/tenghao/opt/anaconda3/envs/u3d/bin/python -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=x86_64
+cmake .. -DCMAKE_PREFIX_PATH=/home/husky/Downloads/libtorch-cxx11-abi-shared-with-deps-2.2.1+cu121/libtorch -DPYTHON_EXECUTABLE=/home/husky/miniconda3/envs/mcts/bin/python -DCMAKE_BUILD_TYPE=Release
 
 # https://blog.csdn.net/Felaim/article/details/105832560
 # 可以查看PYTHON_LIBRARIES和PYTHON_INCLUDE_DIRS
@@ -40,12 +40,16 @@ cmake .. -DCMAKE_PREFIX_PATH=/Users/tenghao/Downloads/libtorch -DPYTHON_EXECUTAB
 # PYTHON_INCLUDE_DIR
 # >>> from distutils.sysconfig import get_python_inc
 # >>> print(get_python_inc())
+# /home/husky/miniconda3/envs/mcts/include/python3.11
 
 # PYTHON_LIBRARY
 # >>> import distutils.sysconfig as sysconfig
 # >>> print(sysconfig.get_config_var('LIBDIR'))
+# /home/husky/miniconda3/envs/mcts/lib
 
 !cmake .. -DCMAKE_PREFIX_PATH=/opt/conda/lib/python3.10/site-packages/torch/share/cmake -DPYTHON_EXECUTABLE=/opt/conda/bin/python  -DCMAKE_BUILD_TYPE=Release -DPYTHON_LIBRARY=/opt/conda/lib -DPYTHON_INCLUDE_DIR=/opt/conda/include/python3.10
+
+# export TORCH_CUDA_ARCH_LIST="8.0 8.6 8.9 9.0"
 
 
 # Run
