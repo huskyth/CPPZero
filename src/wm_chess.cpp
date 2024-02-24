@@ -125,7 +125,7 @@ std::vector<int> WMChess::get_legal_moves(){
     std::vector<int> legal_moves_list = std::vector<int>(size_of_moves, 0);
     for (unsigned int from_point_idx = 0;from_point_idx < this->board.size();from_point_idx++){
         int chessman = this->board[from_point_idx];
-        if (chessman == 0) continue;
+        if (chessman == 0 || chessman != cur_color) continue;
         std::vector<int> to_point_idx_list = this->getNeighboors(from_point_idx);
         for(unsigned int i=0;i < to_point_idx_list.size();i++){
             int to_point_idx = to_point_idx_list[i];

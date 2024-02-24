@@ -50,7 +50,8 @@ cmake .. -DCMAKE_PREFIX_PATH=/home/husky/Downloads/libtorch-cxx11-abi-shared-wit
 !cmake .. -DCMAKE_PREFIX_PATH=/opt/conda/lib/python3.10/site-packages/torch/share/cmake -DPYTHON_EXECUTABLE=/opt/conda/bin/python  -DCMAKE_BUILD_TYPE=Release -DPYTHON_LIBRARY=/opt/conda/lib -DPYTHON_INCLUDE_DIR=/opt/conda/include/python3.10
 
 # export TORCH_CUDA_ARCH_LIST="8.0 8.6 8.9 9.0"
-
+# 崩潰日志
+# 1. txt位置修改
 
 # Run
 cd ../test

@@ -24,7 +24,7 @@ def tuple_2d_to_numpy_2d(tuple_2d):
     return np.array(res)
 
 
-class Leaner():
+class Leaner:
     def __init__(self, config):
         # see config.py
         # WMChess
@@ -85,7 +85,7 @@ class Leaner():
                                      self.libtorch_use_gpu, self.num_mcts_threads * self.num_train_threads)
             itr_examples = []
             with concurrent.futures.ThreadPoolExecutor(max_workers=self.num_train_threads) as executor:
-                futures = [executor.submit(self.self_play, 1 if itr % 2 else -1, libtorch, k == 1) for k in
+                futures = [executor.submit(self.self_play, 1 if itr % 2 else -1, libtorch, False) for k in
                            range(1, self.num_eps + 1)]
                 for k, f in enumerate(futures):
                     examples = f.result()
@@ -266,6 +266,7 @@ class Leaner():
             player_index = -player_index
 
     def get_symmetries(self, board, pi, last_action):
+        return [(board, pi, last_action)]
         # mirror, rotational
         assert (len(pi) == self.action_size)  # 1 for pass
 

@@ -20,6 +20,14 @@ void two_dimension_vector_print(std::vector<std::vector<int>> printed){
       }
 
 }
+
+void one_dimension_vector_print(std::vector<double> printed){
+    unsigned column = printed.size();
+      for (unsigned int i = 0; i < printed.size(); i++) {
+        std::cout << printed[i] << " ";
+      }
+
+}
 std::vector<std::vector<int>> transfer(std::string x){
     unsigned n = x.length();
 
