@@ -7,11 +7,13 @@
 %}
 
 %include "std_vector.i"
+%include "std_pair.i"
 namespace std {
   %template(IntVector) vector<int>;
   %template(IntVectorVector) vector<vector<int>>;
   %template(DoubleVector) vector<double>;
   %template(DoubleVectorVector) vector<vector<double>>;
+  %template(PairIntInt) pair<int,int>;
 }
 
 %include "std_string.i"
