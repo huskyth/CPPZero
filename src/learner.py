@@ -191,7 +191,7 @@ class Leaner:
 
             if show:
                 self.gomoku_gui.execute_move(cur_player, action)
-            wm_chess.execute_move(action)
+            wm_chess.execute_move(wm_chess.get_move_from_index(action))
             player1.update_with_move(action)
             player2.update_with_move(action)
 
