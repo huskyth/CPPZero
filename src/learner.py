@@ -2,7 +2,6 @@ from collections import deque
 from os import path, mkdir
 import threading
 import time
-import math
 import numpy as np
 import pickle
 import concurrent.futures
@@ -12,7 +11,7 @@ from functools import reduce
 from library import MCTS, WMChess, NeuralNetwork
 
 from neural_network import NeuralNetWorkWrapper
-from gomoku_gui import GomokuGUI
+from wm_chess_gui import WMChessGUI
 
 
 def tuple_2d_to_numpy_2d(tuple_2d):
@@ -31,7 +30,7 @@ class Leaner:
         self.n = config['n']
         self.n_in_row = config['n_in_row']
         self.use_gui = config['use_gui']
-        self.gomoku_gui = GomokuGUI(config['n'], config['human_color'])
+        self.wm_chess_gui = WMChessGUI(config['n'], config['human_color'])
         self.action_size = config['action_size']
 
         # train
@@ -64,7 +63,7 @@ class Leaner:
     def learn(self):
         # start gui
         if self.use_gui:
-            t = threading.Thread(target=self.gomoku_gui.loop)
+            t = threading.Thread(target=self.wm_chess_gui.loop)
             t.start()
 
         # train the model by self play
@@ -85,7 +84,7 @@ class Leaner:
                                      self.libtorch_use_gpu, self.num_mcts_threads * self.num_train_threads)
             itr_examples = []
             with concurrent.futures.ThreadPoolExecutor(max_workers=self.num_train_threads) as executor:
-                futures = [executor.submit(self.self_play, 1 if itr % 2 else -1, libtorch, False) for k in
+                futures = [executor.submit(self.self_play, 1 if itr % 2 else -1, libtorch, k == 1) for k in
                            range(1, self.num_eps + 1)]
                 for k, f in enumerate(futures):
                     examples = f.result()
@@ -152,7 +151,7 @@ class Leaner:
         wm_chess = WMChess(self.n, first_color)
 
         if show:
-            self.gomoku_gui.reset_status()
+            self.wm_chess_gui.reset_status()
 
         episode_step = 0
         while True:
@@ -190,7 +189,7 @@ class Leaner:
             action = np.random.choice(len(prob), p=prob)
 
             if show:
-                self.gomoku_gui.execute_move(cur_player, action)
+                self.wm_chess_gui.execute_move(cur_player, wm_chess.get_move_from_index(action))
             wm_chess.execute_move(wm_chess.get_move_from_index(action))
             player1.update_with_move(action)
             player2.update_with_move(action)
