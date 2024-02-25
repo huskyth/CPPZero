@@ -237,7 +237,7 @@ class Leaner:
         player_index = first_player
         wm_chess = WMChess(self.n, first_player)
         if show:
-            self.gomoku_gui.reset_status()
+            self.wm_chess_gui.reset_status()
 
         # play
         while True:
@@ -250,7 +250,7 @@ class Leaner:
             # execute move
             wm_chess.execute_move(best_move)
             if show:
-                self.gomoku_gui.execute_move(player_index, best_move)
+                self.wm_chess_gui.execute_move(player_index, best_move)
 
             # check game status
             ended, winner = wm_chess.get_game_status()

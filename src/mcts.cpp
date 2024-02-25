@@ -75,7 +75,9 @@ unsigned int TreeNode::select(double c_puct, double c_virtual_loss) {
       best_node = children[i];
     }
   }
-
+  if(best_node == nullptr){
+    std::cout << "best_node == nullptr" << std::endl;
+  }
   // add vitural loss
   best_node->virtual_loss++;
 
@@ -155,9 +157,12 @@ MCTS::MCTS(NeuralNetwork *neural_network, unsigned int thread_num, double c_puct
 
 void MCTS::update_with_move(int last_action) {
   auto old_root = this->root.get();
-
+  if(last_action > old_root->children.size() - 1){
+    std::cout << "out of bound" << std::endl;
+  }
+  TreeNode *temp = old_root->children[last_action];
   // reuse the child tree
-  if (last_action >= 0 && old_root->children[last_action] != nullptr) {
+  if (last_action >= 0 && temp != nullptr) {
     // unlink
     TreeNode *new_node = old_root->children[last_action];
     old_root->children[last_action] = nullptr;

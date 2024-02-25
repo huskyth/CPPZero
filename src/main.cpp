@@ -1,10 +1,18 @@
 #include <iostream>
 #include <assert.h>
+// #include <atmotic>
 
 #include "wm_chess.h"
 
 int main(){
-    WMChess wm(7, 1);
+    // WMChess* wm = new WMChess(7, 1);
+    // wm = nullptr;
+    // int c = wm -> WHITE ;
+    // std::cout << c << std::endl;
+
+    std::vector<int> temp;
+    temp.size();
+    
     // WMChess::board_type board_temp = {1,1,0,0,0,0,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0};
 
     // wm.set_board(board_temp);
@@ -36,7 +44,7 @@ int main(){
 
     // }
 
-    two_dimension_vector_print(wm.get_board());
+    // two_dimension_vector_print(wm.get_board());
 
 
    return 0;
