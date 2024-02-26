@@ -60,12 +60,20 @@ public:
     if(this->move_string_index.size()==0){
         this->init_move_index_tuple();
     }
+    if(this->move_string_index.count(temp) ==0){
+      std::cout << "no key return -1 in get_move_from_move" << std::endl;
+      return -1;
+    }
     return this->move_string_index[temp]; 
   }
 
   inline move_type get_move_from_index(int id) {
     if(this->move_index_tuple.size()==0){
         this->init_move_index_tuple();
+    }
+    if(this->move_index_tuple.count(id) ==0){
+      std::cout << "no key return (-1,-1) in get_move_from_index" << std::endl;
+      return move_type(-1,-1);
     }
     return this->move_index_tuple[id]; 
   }
@@ -82,6 +90,7 @@ public:
   void set_board(board_type board);
   std::vector<int> get_legal_moves();
   input_board_type transfer();
+  std::pair<int,int> find_row_column_in_map(move_type move);
 
 private:
 

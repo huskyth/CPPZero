@@ -300,6 +300,11 @@ void MCTS::simulate(std::shared_ptr<WMChess> game) {
       // your NNet and/or training process.
       std::cout << "All valid moves were masked, do workaround." << std::endl;
 
+      std::for_each(action_priors.begin(), action_priors.end(), [](double x) { std::cout << x << ","; });
+      std::cout << std::endl;
+      std::for_each(legal_moves.begin(), legal_moves.end(), [](int x) { std::cout << x << ","; });
+      std::cout << std::endl;
+
       sum = std::accumulate(legal_moves.begin(), legal_moves.end(), 0);
       for (unsigned int i = 0; i < action_priors.size(); i++) {
         action_priors[i] = legal_moves[i] / sum;

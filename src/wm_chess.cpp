@@ -158,3 +158,8 @@ WMChess::input_board_type WMChess::transfer(){
     return result;
 }
 
+std::pair<int,int> WMChess::find_row_column_in_map(WMChess::move_type move){
+    int to = move.second;
+    return ARRAY_TO_IMAGE[to];
+}
+
