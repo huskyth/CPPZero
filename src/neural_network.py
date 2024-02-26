@@ -11,6 +11,8 @@ import torch.nn.functional as F
 
 import numpy as np
 
+from test.common import MOVE_TO_INDEX_DICT, ARRAY_TO_IMAGE
+
 
 def conv3x3(in_channels, out_channels, stride=1):
     # 3x3 convolution
@@ -240,11 +242,21 @@ class NeuralNetWorkWrapper:
                 state0[i].copy_(state1[i])
                 state1[i].copy_(temp)
 
-            last_action = last_action_batch[i]
-            if last_action != -1:
-                x, y = last_action // self.n, last_action % self.n
-                state2[i][0][x][y] = 1
+            last_action_pair = last_action_batch[i]
+            from_id, to_id = last_action_pair
+            # TODO:// if always not in MOVE_TO_INDEX_DICT,it's a bug
+            if last_action_pair not in MOVE_TO_INDEX_DICT:
+                assert last_action_pair == (-1, -1)
+                print(f"last action = -1, last_action_pair is {last_action_pair}")
+                last_action = -1
+            else:
+                last_action = MOVE_TO_INDEX_DICT[last_action_pair]
 
+            if last_action != -1:
+                row, column = ARRAY_TO_IMAGE[to_id]
+                state2[i][0][row][column] = 1
+
+        assert False, "train before test all"
         res = torch.cat((state0, state1, state2), dim=1)
         # res = torch.cat((state0, state1), dim=1)
         return res.cuda() if self.train_use_gpu else res
