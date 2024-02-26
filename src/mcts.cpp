@@ -99,7 +99,6 @@ void TreeNode::expand(const std::vector<double> &action_priors) {
         }
         this->children[i] = new TreeNode(this, action_priors[i], action_size);
       }
-
       // not leaf
       this->is_leaf = false;
     }
@@ -157,12 +156,8 @@ MCTS::MCTS(NeuralNetwork *neural_network, unsigned int thread_num, double c_puct
 
 void MCTS::update_with_move(int last_action) {
   auto old_root = this->root.get();
-  if(last_action > old_root->children.size() - 1){
-    std::cout << "out of bound" << std::endl;
-  }
-  TreeNode *temp = old_root->children[last_action];
   // reuse the child tree
-  if (last_action >= 0 && temp != nullptr) {
+  if (last_action >= 0 && old_root->children[last_action] != nullptr) {
     // unlink
     TreeNode *new_node = old_root->children[last_action];
     old_root->children[last_action] = nullptr;
@@ -299,11 +294,6 @@ void MCTS::simulate(std::shared_ptr<WMChess> game) {
       // got dozens or hundreds of these messages you should pay attention to
       // your NNet and/or training process.
       std::cout << "All valid moves were masked, do workaround." << std::endl;
-
-      std::for_each(action_priors.begin(), action_priors.end(), [](double x) { std::cout << x << ","; });
-      std::cout << std::endl;
-      std::for_each(legal_moves.begin(), legal_moves.end(), [](int x) { std::cout << x << ","; });
-      std::cout << std::endl;
 
       sum = std::accumulate(legal_moves.begin(), legal_moves.end(), 0);
       for (unsigned int i = 0; i < action_priors.size(); i++) {

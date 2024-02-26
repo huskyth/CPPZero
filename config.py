@@ -38,4 +38,4 @@ config = {
 }
 
 # action size
-config['action_size'] = config['n'] ** 2
+config['action_size'] = 72

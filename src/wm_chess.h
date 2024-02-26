@@ -61,7 +61,7 @@ public:
         this->init_move_index_tuple();
     }
     if(this->move_string_index.count(temp) ==0){
-      std::cout << "no key return -1 in get_move_from_move" << std::endl;
+      assert(temp == "-1_-1");
       return -1;
     }
     return this->move_string_index[temp]; 

@@ -47,10 +47,6 @@ std::future<NeuralNetwork::return_type> NeuralNetwork::commit(WMChess* wm_chess)
   torch::Tensor state0 = temp.gt(0).toType(torch::kFloat32);
   torch::Tensor state1 = temp.lt(0).toType(torch::kFloat32);
 
-  std::cout << "state0 = " << state0 << std::endl;
-
-  std::cout << "state1 = " << state1 << std::endl;
-
   auto last_move_pair = wm_chess->get_last_move();
 
   int last_move = wm_chess->get_move_from_move(last_move_pair);
@@ -69,7 +65,6 @@ std::future<NeuralNetwork::return_type> NeuralNetwork::commit(WMChess* wm_chess)
   if (last_move != -1) {
     state2[0][0][move_position.first][move_position.second] = 1;
   }
-  std::cout << "state2 = " << state2 << std::endl;
 
   // torch::Tensor states = torch::cat({state0, state1}, 1);
   torch::Tensor states = torch::cat({state0, state1, state2}, 1);

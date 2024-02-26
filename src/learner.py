@@ -11,7 +11,7 @@ from functools import reduce
 from library import MCTS, WMChess, NeuralNetwork
 
 from neural_network import NeuralNetWorkWrapper
-from test.tensor_board_tool import MySummary
+from tensor_board_tool import MySummary
 from wm_chess_gui import WMChessGUI
 
 

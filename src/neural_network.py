@@ -11,7 +11,7 @@ import torch.nn.functional as F
 
 import numpy as np
 
-from test.common import MOVE_TO_INDEX_DICT, ARRAY_TO_IMAGE
+from common import MOVE_TO_INDEX_DICT, ARRAY_TO_IMAGE
 
 
 def conv3x3(in_channels, out_channels, stride=1):
@@ -256,7 +256,6 @@ class NeuralNetWorkWrapper:
                 row, column = ARRAY_TO_IMAGE[to_id]
                 state2[i][0][row][column] = 1
 
-        assert False, "train before test all"
         res = torch.cat((state0, state1, state2), dim=1)
         # res = torch.cat((state0, state1), dim=1)
         return res.cuda() if self.train_use_gpu else res
