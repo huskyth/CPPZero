@@ -1,3 +1,4 @@
+import os
 import random
 from pathlib import Path
 
@@ -13,3 +14,8 @@ def setup_seed(seed):
     np.random.seed(seed)
     random.seed(seed)
     torch.backends.cudnn.deterministic = True
+
+
+def create_directory(path):
+    if not os.path.exists(str(path)):
+        os.mkdir(str(path))

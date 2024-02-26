@@ -31,6 +31,7 @@ config = {
     'num_contest': 10,                          # new/old model compare times
     'check_freq': 20,                           # test model frequency
     'examples_buffer_max_len': 20,              # max length of examples buffer
+    'use_wandb': False,
 
     # test
     'human_color': 1                            # human player's color

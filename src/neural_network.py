@@ -60,7 +60,8 @@ class NeuralNetWork(nn.Module):
         super(NeuralNetWork, self).__init__()
 
         # residual block
-        res_list = [ResidualBlock(3, num_channels)] + [ResidualBlock(num_channels, num_channels) for _ in range(num_layers - 1)]
+        res_list = [ResidualBlock(3, num_channels)] + [ResidualBlock(num_channels, num_channels) for _ in
+                                                       range(num_layers - 1)]
         self.res_layers = nn.Sequential(*res_list)
 
         # policy head
@@ -127,11 +128,12 @@ class AlphaLoss(nn.Module):
         return value_loss + policy_loss
 
 
-class NeuralNetWorkWrapper():
+class NeuralNetWorkWrapper:
     """train and predict
     """
 
-    def __init__(self, lr, l2, num_layers, num_channels, n, action_size, train_use_gpu=True, libtorch_use_gpu=True):
+    def __init__(self, lr, l2, num_layers, num_channels, n, action_size, train_use_gpu=True, libtorch_use_gpu=True,
+                 summary=None):
         """ init
         """
         self.lr = lr
@@ -148,6 +150,9 @@ class NeuralNetWorkWrapper():
 
         self.optim = AdamW(self.neural_network.parameters(), lr=self.lr, weight_decay=self.l2)
         self.alpha_loss = AlphaLoss()
+
+        self.summary = summary
+        self.current_log_x = 0
 
     def train(self, example_buffer, batch_size, epochs):
         """train neural network
@@ -183,7 +188,17 @@ class NeuralNetWorkWrapper():
                 np.sum(new_p * np.log(new_p + 1e-10), axis=1)
             )
 
+            self.log(loss, entropy)
+
             print("EPOCH: {}, LOSS: {}, ENTROPY: {}".format(epo, loss.item(), entropy))
+
+    def log(self, loss, entropy):
+        if self.summary is None:
+            print("Not set Summary")
+            return
+        self.summary.add_float(x=self.current_log_x, y=loss.item(), title='LOSS', x_name='LOSS')
+        self.summary.add_float(x=self.current_log_x, y=entropy, title='ENTROPY', x_name='ENTROPY')
+        self.current_log_x += 1
 
     def infer(self, feature_batch):
         """predict p and v by raw input
@@ -230,7 +245,7 @@ class NeuralNetWorkWrapper():
                 x, y = last_action // self.n, last_action % self.n
                 state2[i][0][x][y] = 1
 
-        res =  torch.cat((state0, state1, state2), dim=1)
+        res = torch.cat((state0, state1, state2), dim=1)
         # res = torch.cat((state0, state1), dim=1)
         return res.cuda() if self.train_use_gpu else res
 
@@ -258,7 +273,7 @@ class NeuralNetWorkWrapper():
             os.mkdir(folder)
 
         filepath = os.path.join(folder, filename)
-        state = {'network':self.neural_network.state_dict(), 'optim':self.optim.state_dict()}
+        state = {'network': self.neural_network.state_dict(), 'optim': self.optim.state_dict()}
         torch.save(state, filepath)
 
         # save torchscript

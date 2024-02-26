@@ -11,6 +11,7 @@ from functools import reduce
 from library import MCTS, WMChess, NeuralNetwork
 
 from neural_network import NeuralNetWorkWrapper
+from test.tensor_board_tool import MySummary
 from wm_chess_gui import WMChessGUI
 
 
@@ -43,6 +44,7 @@ class Leaner:
         self.temp = config['temp']
         self.update_threshold = config['update_threshold']
         self.num_explore = config['num_explore']
+        self.summary = MySummary(use_wandb=config['use_wandb'])
 
         self.examples_buffer = deque([], maxlen=config['examples_buffer_max_len'])
 
@@ -58,7 +60,17 @@ class Leaner:
         self.epochs = config['epochs']
         self.nnet = NeuralNetWorkWrapper(config['lr'], config['l2'], config['num_layers'],
                                          config['num_channels'], config['n'], self.action_size, config['train_use_gpu'],
-                                         self.libtorch_use_gpu)
+                                         self.libtorch_use_gpu, self.summary)
+
+    def log(self, one_win, two_win, draws, x):
+        self.summary.add_float(x=x, y=one_win, title='NEW WINS', x_name="NEW WINS")
+        self.summary.add_float(x=x, y=two_win, title='PREV WINS', x_name="PREV WINS")
+        self.summary.add_float(x=x, y=draws, title='DRAWS', x_name="DRAWS")
+        if one_win + two_win > 0:
+            win_rate = float(one_win) / (one_win + two_win)
+        else:
+            win_rate = -1
+        self.summary.add_float(x=x, y=win_rate, title='WIN RATE', x_name="WIN RATE")
 
     def learn(self):
         # start gui
@@ -120,7 +132,7 @@ class Leaner:
 
                 one_won, two_won, draws = self.contest(libtorch_current, libtorch_best, self.num_contest)
                 print("NEW/PREV WINS : %d / %d ; DRAWS : %d" % (one_won, two_won, draws))
-
+                self.log(one_won, two_won, draws, itr)
                 if one_won + two_won > 0 and float(one_won) / (one_won + two_won) > self.update_threshold:
                     print('ACCEPTING NEW MODEL')
                     self.nnet.save_model('models', "best_checkpoint")
