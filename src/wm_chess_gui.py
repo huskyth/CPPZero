@@ -3,7 +3,8 @@ import pygame
 import os
 import numpy as np
 import json
-from common import ROOT_PATH
+from common import ROOT_PATH, shiftOutChessman
+import copy
 
 BLACK = 1
 WHITE = -1
@@ -87,16 +88,19 @@ class WMChessGUI:
 
     # execute move
     def execute_move(self, color, move):
-        from_id, to_id = move
-        print(f"exec {from_id} to {to_id}")
-        assert self.board[from_id] == color
-        assert self.board[to_id] == 0
-        assert (DISTANCE[from_id][to_id] == 1)
-        self.board[from_id] = 0
-        self.board[to_id] = color
-
+        from_int, to_int = move
+        print(f"exec {from_int} to {to_int}")
+        assert color == WHITE or color == BLACK
+        assert self.board[from_int] == color
+        assert self.board[to_int] == 0
+        assert DISTANCE[from_int][to_int] == 1
+        self.board[from_int] = 0
+        self.board[to_int] = color
+        bake_point_status = copy.deepcopy(self.pointStatus)
+        self.board = shiftOutChessman(
+            bake_point_status, DISTANCE)
         self.k += 1
-
+    
     # main loop
     def loop(self):
         # set running

@@ -25,6 +25,7 @@ public:
   WMChess(unsigned int n, int first_color);
   inline unsigned int get_n() const { return this->n; }
   inline input_board_type get_board() { return this->transfer(); }
+  inline board_type get_origin_board() { return this->board; }
   inline move_type get_last_move() const { return this->last_move; }
   inline int get_current_color() const { return this->cur_color; }
   inline unsigned int get_action_size() const { return 72; }
@@ -78,9 +79,20 @@ public:
     return this->move_index_tuple[id]; 
   }
 
-  inline void print_board() const {  
+  inline void print_origin_board() const {  
     for(unsigned int i=0;i < this->board.size();i++){
+      if(i<10) std :: cout << i << "  ";
+      else{
+          std :: cout << i << " ";
+      }
+    }
+    std::cout << std::endl;
+    for(unsigned int i=0;i < this->board.size();i++){
+      if(this->board[i] >= 0)
+        std :: cout << this->board[i] << "  ";
+      else{
         std :: cout << this->board[i] << " ";
+      }
     }
     std :: cout << std::endl;
   }

@@ -11,9 +11,23 @@
 // }
 
 int main(){
-    WMChess* wm = new WMChess(7, 1);
-    WMChess::move_type temp = wm->find_row_column_in_map(WMChess::move_type(0,10));
-    std::cout <<  temp.first << "," << temp.second << std::endl;
+    WMChess* wm = new WMChess(7, -1);
+    std::vector<int> boad =  std::vector<int>(21,0);
+    boad[14] = 1;
+    boad[12] = -1;
+    boad[15] = -1;
+    boad[10] = -1;
+    WMChess::move_type move = std::make_pair(10,11);
+    wm -> set_board(boad);
+    wm->print_board();
+    wm->execute_move(move);
+    wm->print_board();
+
+
+
+
+    // WMChess::move_type temp = wm->find_row_column_in_map(WMChess::move_type(0,10));
+    // std::cout <<  temp.first << "," << temp.second << std::endl;
 
     // std:: cout << "wm = " << wm << std::endl;
     // wm = nullptr;

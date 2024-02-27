@@ -5,6 +5,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+import copy
 
 ROOT_PATH = Path(__file__).parent.parent
 
@@ -71,3 +72,43 @@ ARRAY_TO_IMAGE = {
     20: (3, 3),
     16: (2, 3), 17: (3, 2), 18: (3, 4), 19: (4, 3)
 }
+
+def check(chessman, distance, pointStatus, checkedChessmen):
+    checkedChessmen.append(chessman)
+    dead = True
+    neighboorChessmen = getNeighboors(chessman, distance)
+    for neighboorChessman in neighboorChessmen:
+        if neighboorChessman not in checkedChessmen:
+            # if the neighboor is the same color, check the neighboor to find a
+            # empty neighboor
+            if pointStatus[neighboorChessman] == pointStatus[chessman]:
+                dead = check(neighboorChessman, distance,
+                             pointStatus, checkedChessmen)
+                if dead == False:
+                    return dead
+            elif pointStatus[neighboorChessman] == 0:
+                dead = False
+                return dead
+            else:
+                pass
+    return dead
+
+
+def shiftOutChessman(pointStatus, distance):
+    deadChessmen = []
+    bakPointStatus = copy.deepcopy(pointStatus)
+    for chessman, color in enumerate(pointStatus):
+        checkedChessmen = []
+        dead = True
+        if color != 0:
+            # pdb.set_trace()
+            dead = check(chessman, distance, pointStatus, checkedChessmen)
+        else:
+            pass
+        if dead:
+            deadChessmen.append(chessman)
+        pointStatus = bakPointStatus
+    for eachDeadChessman in deadChessmen:
+        pointStatus[eachDeadChessman] = 0
+
+    return pointStatus
