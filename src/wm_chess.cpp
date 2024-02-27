@@ -14,7 +14,7 @@ void WMChess::execute_move(move_type move) {
     int to = move.second;
     if(this->board[from] != this->cur_color || this->board[to] != 0 || this->get_distance()[from][to] != 1){
         std::cout << "from = " << from << " to = " << to << std::endl;
-        print_board();
+        print_origin_board();
     }
     assert(this->board[from] == this->cur_color);
     assert(this->board[to] == 0);
