@@ -106,15 +106,15 @@ std::vector<int> WMChess::get_game_status() {
                 white_num += 1;
             }
     }
-    if (black_num < 3 || white_num < 3){
-        if (black_num < 3){
-            winner = WHITE;
-        }
-        else{
-            winner = BLACK;
-        }
+
+    if (black_num < white_num){
+        winner = WHITE;
     }
-    result.push_back( winner ==0 ? 0:1);
+    else if(black_num > white_num){
+        winner = BLACK;
+    }
+    
+    result.push_back( winner == 0 ? 0:1);
     result.push_back(winner);
     return result;
 }

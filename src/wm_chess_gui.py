@@ -96,7 +96,7 @@ class WMChessGUI:
         assert DISTANCE[from_int][to_int] == 1
         self.board[from_int] = 0
         self.board[to_int] = color
-        bake_point_status = copy.deepcopy(self.pointStatus)
+        bake_point_status = copy.deepcopy(self.board)
         self.board = shiftOutChessman(
             bake_point_status, DISTANCE)
         self.k += 1
