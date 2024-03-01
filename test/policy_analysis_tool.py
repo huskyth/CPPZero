@@ -70,18 +70,22 @@ class AnalysisTool:
         plt.savefig(str(self.work_path / f'bar_{self.current_step}.png'), dpi=600)
         plt.show()
 
-    def _infer(self, last_move, current_player):
-        input = from_array_to_input_tensor(self.board)
-        p, v = self.nnet.infer([(input, last_move, current_player)])
+    def _infer(self, last_move, current_player, policy=None, value=None):
+        assert policy is None and value is None or policy is not None and value is not None
+        if policy is None and value is None:
+            input = from_array_to_input_tensor(self.board)
+            p, v = self.nnet.infer([(input, last_move, current_player)])
+        else:
+            p, v = policy, value
         with open(str(self.work_path / f"value_{self.current_step}.txt"), 'w') as f:
             f.write(f"value is {v}")
         self._bin_display(p.squeeze(0))
 
-    def analysis(self, board, last_move, current_player, current_step):
+    def analysis(self, board, last_move, current_player, current_step, policy=None, value=None):
         self._set_origin_board(board)
         self.current_step = current_step
         # self._load_model()
-        self._infer(last_move, current_player)
+        self._infer(last_move, current_player, policy, value)
         self._display()
 
 
