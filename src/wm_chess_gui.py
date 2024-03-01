@@ -155,7 +155,8 @@ class WMChessGUI:
         # load background
         self.screen.blit(self.background_img, (0, 0))
 
-    def fix_xy(self, target):
+    @staticmethod
+    def fix_xy(target):
         x = GAME_MAP[target][0] * \
             SCREEN_WIDTH - CHESSMAN_WIDTH * 0.5
         y = GAME_MAP[target][1] * \
@@ -166,7 +167,7 @@ class WMChessGUI:
         for index, point in enumerate(self.board):
             if point == 0:
                 continue
-            (x, y) = self.fix_xy(index)
+            (x, y) = WMChessGUI.fix_xy(index)
             if point == BLACK:
                 pygame.draw.circle(self.screen, (0, 0, 0), (int(x + CHESSMAN_WIDTH / 2), int(y + CHESSMAN_HEIGHT / 2)),
                                    int(CHESSMAN_HEIGHT // 2 * 1.5))

@@ -163,3 +163,5 @@ cython_debug/
 
 /models
 /summary_log
+
+/analysis

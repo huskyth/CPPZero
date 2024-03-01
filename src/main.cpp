@@ -19,9 +19,9 @@ int main(){
     boad[10] = -1;
     WMChess::move_type move = std::make_pair(10,11);
     wm -> set_board(boad);
-    wm->print_board();
+    wm->print_origin_board();
     wm->execute_move(move);
-    wm->print_board();
+    wm->print_origin_board();
 
 
 

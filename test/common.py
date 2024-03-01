@@ -3,6 +3,8 @@ import os
 import random
 from pathlib import Path
 
+import cv2
+import numpy
 import numpy as np
 import torch
 import copy
@@ -25,6 +27,8 @@ def create_directory(path):
 
 DISTANCEPATH = str(ROOT_PATH / 'assets/distance.txt')
 MAPPATH = str(ROOT_PATH / 'assets/pointPos.txt')
+ANALYSIS_PATH = ROOT_PATH / 'analysis'
+create_directory(ANALYSIS_PATH)
 
 
 def get_distance():
@@ -73,6 +77,7 @@ ARRAY_TO_IMAGE = {
     16: (2, 3), 17: (3, 2), 18: (3, 4), 19: (4, 3)
 }
 
+
 def check(chessman, distance, pointStatus, checkedChessmen):
     checkedChessmen.append(chessman)
     dead = True
@@ -112,3 +117,22 @@ def shiftOutChessman(pointStatus, distance):
         pointStatus[eachDeadChessman] = 0
 
     return pointStatus
+
+
+def write_image(name, image):
+    name = str(name)
+    cv2.imwrite(f"{name}.png", image)
+
+
+def from_array_to_input_tensor(numpy_array):
+    assert len(numpy_array) == 21
+    assert isinstance(numpy_array, numpy.ndarray)
+    input_tensor = np.zeros((7, 7))
+    for i, chessman in enumerate(numpy_array):
+        row, column = ARRAY_TO_IMAGE[i]
+        input_tensor[row, column] = chessman
+    return input_tensor
+
+
+def read_image(path):
+    return cv2.imread(str(path))
