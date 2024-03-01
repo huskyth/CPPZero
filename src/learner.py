@@ -63,14 +63,15 @@ class Leaner:
                                          self.libtorch_use_gpu, self.summary)
 
     def log(self, one_win, two_win, draws, x):
-        self.summary.add_float(x=x, y=one_win, title='NEW WINS', x_name="NEW WINS")
-        self.summary.add_float(x=x, y=two_win, title='PREV WINS', x_name="PREV WINS")
-        self.summary.add_float(x=x, y=draws, title='DRAWS', x_name="DRAWS")
+        train_iter = "Iter"
+        self.summary.add_float(x=x, y=one_win, title='NEW WINS', x_name=train_iter)
+        self.summary.add_float(x=x, y=two_win, title='PREV WINS', x_name=train_iter)
+        self.summary.add_float(x=x, y=draws, title='DRAWS', x_name=train_iter)
         if one_win + two_win > 0:
             win_rate = float(one_win) / (one_win + two_win)
         else:
             win_rate = -1
-        self.summary.add_float(x=x, y=win_rate, title='WIN RATE', x_name="WIN RATE")
+        self.summary.add_float(x=x, y=win_rate, title='WIN RATE', x_name=train_iter)
 
     def learn(self):
         # start gui

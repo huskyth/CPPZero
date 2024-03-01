@@ -198,8 +198,9 @@ class NeuralNetWorkWrapper:
         if self.summary is None:
             print("Not set Summary")
             return
-        self.summary.add_float(x=self.current_log_x, y=loss.item(), title='LOSS', x_name='LOSS')
-        self.summary.add_float(x=self.current_log_x, y=entropy, title='ENTROPY', x_name='ENTROPY')
+        epoch = "Epoch"
+        self.summary.add_float(x=self.current_log_x, y=loss.item(), title='LOSS', x_name=epoch)
+        self.summary.add_float(x=self.current_log_x, y=entropy, title='ENTROPY', x_name=epoch)
         self.current_log_x += 1
 
     def infer(self, feature_batch):
