@@ -172,6 +172,7 @@ class Leaner:
             player = players[player_index + 1]
 
             # get action prob
+            # TODO://self.num_explore这个值可以调大点
             if episode_step <= self.num_explore:
                 prob = np.array(list(player.get_action_probs(wm_chess, self.temp)))
             else:
