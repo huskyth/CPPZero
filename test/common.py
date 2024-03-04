@@ -77,6 +77,10 @@ ARRAY_TO_IMAGE = {
     16: (2, 3), 17: (3, 2), 18: (3, 4), 19: (4, 3)
 }
 
+IMAGE_TO_ARRAY = {}
+for k in ARRAY_TO_IMAGE:
+    IMAGE_TO_ARRAY[ARRAY_TO_IMAGE[k]] = k
+
 
 def check(chessman, distance, pointStatus, checkedChessmen):
     checkedChessmen.append(chessman)
@@ -132,6 +136,20 @@ def from_array_to_input_tensor(numpy_array):
         row, column = ARRAY_TO_IMAGE[i]
         input_tensor[row, column] = chessman
     return input_tensor
+
+
+def from_tensor_to_input_array(map_tensor):
+    assert len(map_tensor) == 7
+    assert isinstance(map_tensor, torch.Tensor)
+    input_array = np.zeros(21)
+    for i in range(7):
+        for j in range(7):
+            item = map_tensor[i][j]
+            if item == 0:
+                continue
+            index = IMAGE_TO_ARRAY[(i, j)]
+            input_array[index] = item
+    return input_array
 
 
 def read_image(path):
