@@ -12,6 +12,8 @@ from library import MCTS, WMChess, NeuralNetwork
 
 from neural_network import NeuralNetWorkWrapper
 from tensor_board_tool import MySummary
+
+from symmetry_creator import lr, tb
 from wm_chess_gui import WMChessGUI
 
 
@@ -183,9 +185,11 @@ class Leaner:
             last_action = wm_chess.get_last_move()
             cur_player = wm_chess.get_current_color()
 
-            sym = self.get_symmetries(board, prob, last_action)
-            for b, p, a in sym:
-                train_examples.append([b, a, cur_player, p])
+            sym = self.get_symmetries(board, prob, last_action, cur_player)
+            for b, p, a, c_p, is_up_down_flip in sym:
+                if is_up_down_flip:
+                    assert c_p == -cur_player
+                train_examples.append([b, a, c_p, p, is_up_down_flip])
 
             # dirichlet noise
             legal_moves = list(wm_chess.get_legal_moves())
@@ -214,8 +218,9 @@ class Leaner:
             # is ended
             ended, winner = wm_chess.get_game_status()
             if ended == 1:
+                # TODO://draw to check
                 # b, last_action, cur_player, p, v
-                return [(x[0], x[1], x[2], x[3], x[2] * winner) for x in train_examples]
+                return [(x[0], x[1], x[2], x[3], x[2] * winner * -1 if x[4] else 1) for x in train_examples]
 
     def contest(self, network1, network2, num_contest):
         """compare new and old model
@@ -278,27 +283,20 @@ class Leaner:
             # next player
             player_index = -player_index
 
-    def get_symmetries(self, board, pi, last_action):
-        return [(board, pi, last_action)]
-        # mirror, rotational
-        assert (len(pi) == self.action_size)  # 1 for pass
+    def get_symmetries(self, board, pi, last_action, current_player):
+        ret = [(board, pi, last_action, current_player, False)]
+        new_board, new_last_action, new_pi, new_current_player = \
+            lr(board, last_action, pi, current_player)
+        ret.append((new_board, new_pi, new_last_action, new_current_player, False))
 
-        pi_board = np.reshape(pi, (self.n, self.n))
-        last_action_board = np.zeros((self.n, self.n))
-        last_action_board[last_action // self.n][last_action % self.n] = 1
-        l = []
+        new_board, new_last_action, new_pi, new_current_player = \
+            tb(board, last_action, pi, current_player)
+        ret.append((new_board, new_pi, new_last_action, new_current_player, True))
 
-        for i in range(1, 5):
-            for j in [True, False]:
-                newB = np.rot90(board, i)
-                newPi = np.rot90(pi_board, i)
-                newAction = np.rot90(last_action_board, i)
-                if j:
-                    newB = np.fliplr(newB)
-                    newPi = np.fliplr(newPi)
-                    newAction = np.fliplr(newAction)
-                l += [(newB, newPi.ravel(), np.argmax(newAction) if last_action != -1 else -1)]
-        return l
+        new_board_1, new_last_action_1, new_pi_1, new_current_player_1 = \
+            lr(new_board, new_last_action, new_pi, new_current_player)
+        ret.append((new_board_1, new_pi_1, new_last_action_1, new_current_player_1, True))
+        return ret
 
     def play_with_human(self, human_first=True, checkpoint_name="best_checkpoint"):
         # wm_chess gui
