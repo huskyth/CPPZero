@@ -225,7 +225,7 @@ class Leaner:
         one_won, two_won, draws = 0, 0, 0
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=self.num_train_threads) as executor:
-            futures = [executor.submit( \
+            futures = [executor.submit(
                 self._contest, network1, network2, 1 if k <= num_contest // 2 else -1, k == 1) for k in
                 range(1, num_contest + 1)]
             for f in futures:
@@ -302,37 +302,38 @@ class Leaner:
 
     def play_with_human(self, human_first=True, checkpoint_name="best_checkpoint"):
         # wm_chess gui
-        t = threading.Thread(target=self.gomoku_gui.loop)
+        t = threading.Thread(target=self.wm_chess_gui.loop)
         t.start()
 
         # load best model
         libtorch_best = NeuralNetwork('./models/best_checkpoint.pt', self.libtorch_use_gpu, 12)
-        mcts_best = MCTS(libtorch_best, self.num_mcts_threads * 3, \
+        mcts_best = MCTS(libtorch_best, self.num_mcts_threads * 3,
                          self.c_puct, self.num_mcts_sims * 6, self.c_virtual_loss, self.action_size)
 
         # create wm_chess game
-        human_color = self.gomoku_gui.get_human_color()
-        wm_chess = wm_chess(self.n, human_color if human_first else -human_color)
+        human_color = self.wm_chess_gui.get_human_color()
+        wm_chess = WMChess(self.n, human_color if human_first else -human_color)
 
         players = ["alpha", None, "human"] if human_color == 1 else ["human", None, "alpha"]
         player_index = human_color if human_first else -human_color
 
-        self.gomoku_gui.reset_status()
+        self.wm_chess_gui.reset_status()
 
         while True:
             player = players[player_index + 1]
 
             # select move
             if player == "alpha":
+                # TODO:// CPP代码中get_action_probs这个函数的temp检查一下等于多少
                 prob = mcts_best.get_action_probs(wm_chess)
                 best_move = int(np.argmax(np.array(list(prob))))
-                self.gomoku_gui.execute_move(player_index, best_move)
+                self.wm_chess_gui.execute_move(player_index, best_move)
             else:
-                self.gomoku_gui.set_is_human(True)
+                self.wm_chess_gui.set_is_human(True)
                 # wait human action
-                while self.gomoku_gui.get_is_human():
+                while self.wm_chess_gui.get_is_human():
                     time.sleep(0.1)
-                best_move = self.gomoku_gui.get_human_move()
+                best_move = self.wm_chess_gui.get_human_move()
 
             # execute move
             wm_chess.execute_move(best_move)

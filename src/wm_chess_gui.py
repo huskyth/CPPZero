@@ -12,18 +12,18 @@ SCREEN_WIDTH = 580
 SCREEN_HEIGHT = 580
 CHESSMAN_WIDTH = 20
 CHESSMAN_HEIGHT = 20
-MAPPATH = str(ROOT_PATH / "assets/pointPos.txt")
-DISTANCEPATH = str(ROOT_PATH / "assets/distance.txt")
+MAP_PATH = str(ROOT_PATH / "assets/pointPos.txt")
+DISTANCE_PATH = str(ROOT_PATH / "assets/distance.txt")
 
 
 def get_map():
-    with open(MAPPATH, 'rb') as f:
+    with open(MAP_PATH, 'rb') as f:
         point_pos = json.loads(f.read())
         return point_pos
 
 
 def get_distance():
-    with open(DISTANCEPATH, 'rb') as f:
+    with open(DISTANCE_PATH, 'rb') as f:
         distance = json.loads(f.read())
         return distance
 
@@ -45,6 +45,16 @@ class WMChessGUI:
 
         # human color
         self.human_color = human_color
+
+        # reset items
+        self.board = None
+        self.number = None
+        self.k = None
+        self.is_human = None
+        self.human_move = None
+        self.chessman_in_hand = None
+        self.chosen_chessman_color = None
+        self.chosen_chessman = None
 
         # reset status
         self.reset_status()
@@ -73,6 +83,10 @@ class WMChessGUI:
         self.is_human = False
         self.human_move = -1
 
+        self.chessman_in_hand = False
+        self.chosen_chessman_color = None
+        self.chosen_chessman = None
+
     # human play
     def set_is_human(self, value=True):
         self.is_human = value
@@ -100,7 +114,7 @@ class WMChessGUI:
         self.board = shiftOutChessman(
             bake_point_status, DISTANCE)
         self.k += 1
-    
+
     # main loop
     def loop(self):
         # set running
@@ -135,14 +149,25 @@ class WMChessGUI:
                 # human play
                 if self.is_human and event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_y, mouse_x = event.pos
-                    position = (int(mouse_x / self.grid_width + 0.5) - 2,
-                                int(mouse_y / self.grid_width + 0.5) - 2)
+                    chessman = self._chosen_chessman(mouse_x, mouse_y)
+                    if not self.chessman_in_hand:
+                        if self.board[chessman] == self.human_color:
+                            self.chosen_chessman_color = self.board[chessman]
+                            self.board[chessman] = 0
+                            self.chessman_in_hand = True
+                            self.chosen_chessman = chessman
+                    else:
+                        if self.board[chessman] == 0 and \
+                                DISTANCE[self.chosen_chessman][chessman] == 1:
+                            self.board[chessman] = self.chosen_chessman_color
 
-                    if position[0] in range(0, self.n) and position[1] in range(0, self.n) \
-                            and self.board[position[0]][position[1]] == 0:
-                        self.human_move = position[0] * self.n + position[1]
-                        self.execute_move(self.human_color, self.human_move)
-                        self.set_is_human(False)
+                            self.human_move = (self.chosen_chessman, chessman)
+                            self.execute_move(self.human_color, self.human_move)
+                            self.set_is_human(False)
+                        else:
+                            self.board[
+                                self.chosen_chessman] = self.chosen_chessman_color
+                        self.chessman_in_hand = False
 
             # draw
             self._draw_background()
@@ -150,6 +175,13 @@ class WMChessGUI:
 
             # refresh
             pygame.display.flip()
+
+    def _chosen_chessman(self, x, y):
+        x, y = x / (SCREEN_WIDTH + 0.0), y / (SCREEN_HEIGHT + 0.0)
+        for point in range(21):
+            if abs(x - GAME_MAP[point][0]) < 0.05 and abs(y - GAME_MAP[point][1]) < 0.05:
+                return point
+        return None
 
     def _draw_background(self):
         # load background
