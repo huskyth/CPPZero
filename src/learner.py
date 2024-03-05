@@ -352,7 +352,7 @@ class Leaner:
                 # TODO:// CPP代码中get_action_probs这个函数的temp检查一下等于多少
                 prob = mcts_best.get_action_probs(wm_chess)
                 best_move = int(np.argmax(np.array(list(prob))))
-                self.wm_chess_gui.execute_move(player_index, best_move)
+                self.wm_chess_gui.execute_move(player_index, wm_chess.get_move_from_index(best_move))
             else:
                 self.wm_chess_gui.set_is_human(True)
                 # wait human action
@@ -361,7 +361,7 @@ class Leaner:
                 best_move = self.wm_chess_gui.get_human_move()
 
             # execute move
-            wm_chess.execute_move(best_move)
+            wm_chess.execute_move(wm_chess.get_move_from_index(best_move))
 
             # check game status
             ended, winner = wm_chess.get_game_status()

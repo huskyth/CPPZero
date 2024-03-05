@@ -6,6 +6,8 @@ import json
 from common import ROOT_PATH, shiftOutChessman
 import copy
 
+from common import MOVE_TO_INDEX_DICT
+
 BLACK = 1
 WHITE = -1
 SCREEN_WIDTH = 580
@@ -123,6 +125,7 @@ class WMChessGUI:
         # init
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
+
         pygame.display.set_caption("WmChess")
 
         # timer
@@ -148,21 +151,23 @@ class WMChessGUI:
 
                 # human play
                 if self.is_human and event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_y, mouse_x = event.pos
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
                     chessman = self._chosen_chessman(mouse_x, mouse_y)
+                    if chessman is None:
+                        continue
                     if not self.chessman_in_hand:
                         if self.board[chessman] == self.human_color:
                             self.chosen_chessman_color = self.board[chessman]
-                            self.board[chessman] = 0
                             self.chessman_in_hand = True
                             self.chosen_chessman = chessman
+
                     else:
                         if self.board[chessman] == 0 and \
                                 DISTANCE[self.chosen_chessman][chessman] == 1:
-                            self.board[chessman] = self.chosen_chessman_color
 
                             self.human_move = (self.chosen_chessman, chessman)
                             self.execute_move(self.human_color, self.human_move)
+                            self.human_move = MOVE_TO_INDEX_DICT[self.human_move]
                             self.set_is_human(False)
                         else:
                             self.board[
