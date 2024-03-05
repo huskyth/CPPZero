@@ -15,7 +15,7 @@ from tensor_board_tool import MySummary
 
 from symmetry_creator import lr, tb
 
-from test.policy_analysis_tool import AnalysisTool
+from policy_analysis_tool import AnalysisTool
 from wm_chess_gui import WMChessGUI
 
 
@@ -147,6 +147,19 @@ class Leaner:
                 # release gpu memory
                 del libtorch_current
                 del libtorch_best
+
+    def only_self_play(self):
+        libtorch_current = NeuralNetwork('./models/checkpoint.pt',
+                                         self.libtorch_use_gpu,
+                                         self.num_mcts_threads * self.num_train_threads // 2)
+        libtorch_best = NeuralNetwork('./models/best_checkpoint.pt',
+                                      self.libtorch_use_gpu,
+                                      self.num_mcts_threads * self.num_train_threads // 2)
+
+        self.contest(libtorch_current, libtorch_best, 1)
+        # release gpu memory
+        del libtorch_current
+        del libtorch_best
 
     def self_play(self, first_color, libtorch, show, data_analysis):
         """

@@ -9,7 +9,7 @@
 #include <utility>
 #include <vector>
 
-#include <wm_chess.h>
+#include "wm_chess.h"
 
 class NeuralNetwork {
  public:

@@ -6,9 +6,9 @@
 #include <thread>
 #include <atomic>
 
-#include <wm_chess.h>
-#include <thread_pool.h>
-#include <libtorch.h>
+#include "wm_chess.h"
+#include "thread_pool.h"
+#include "libtorch.h"
 
 class TreeNode {
  public:
