@@ -22,6 +22,7 @@ class NeuralNetwork {
   void set_batch_size(unsigned int batch_size) {    // set batch_size
     this->batch_size = batch_size;
   };
+  torch::Tensor get_value(WMChess* wm_chess);
 
  private:
   using task_type = std::pair<torch::Tensor, std::promise<return_type>>;

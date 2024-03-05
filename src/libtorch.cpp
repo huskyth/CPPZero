@@ -145,3 +145,61 @@ void NeuralNetwork::infer() {
     promises[i].set_value(std::move(temp));
   }
 }
+
+  torch::Tensor NeuralNetwork::get_value(WMChess* wm_chess){
+
+    int n = wm_chess->get_n();
+
+    // convert data format
+    auto board = wm_chess->get_board();
+    std::vector<int> board0;
+    for (unsigned int i = 0; i < board.size(); i++) {
+      board0.insert(board0.end(), board[i].begin(), board[i].end());
+    }
+
+    torch::Tensor temp =
+      torch::from_blob(&board0[0], {1, 1, n, n}, torch::dtype(torch::kInt32));
+
+    torch::Tensor state0 = temp.gt(0).toType(torch::kFloat32);
+    torch::Tensor state1 = temp.lt(0).toType(torch::kFloat32);
+
+    auto last_move_pair = wm_chess->get_last_move();
+
+    int last_move = wm_chess->get_move_from_move(last_move_pair);
+
+    auto move_position = wm_chess->find_row_column_in_map(last_move_pair);
+    
+    int cur_player = wm_chess->get_current_color();
+
+    if (cur_player == -1) {
+      std::swap(state0, state1);
+    }
+
+    torch::Tensor state2 =
+        torch::zeros({1, 1, n, n}, torch::dtype(torch::kFloat32));
+
+    if (last_move != -1) {
+      state2[0][0][move_position.first][move_position.second] = 1;
+    }
+
+  // torch::Tensor states = torch::cat({state0, state1}, 1);
+  torch::Tensor states = torch::cat({state0, state1, state2}, 1);
+
+  // infer
+  std::vector<torch::jit::IValue> inputs{
+      this->use_gpu ? torch::cat(states, 0).to(at::kCUDA)
+                    : torch::cat(states, 0)};
+  auto result = this->module->forward(inputs).toTuple();
+
+  torch::Tensor p_batch = result->elements()[0]
+                              .toTensor()
+                              .exp()
+                              .toType(torch::kFloat32)
+                              .to(at::kCPU);
+  torch::Tensor v_batch =
+      result->elements()[1].toTensor().toType(torch::kFloat32).to(at::kCPU);
+    
+  return v_batch;
+
+  }
+

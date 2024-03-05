@@ -26,4 +26,5 @@ class NeuralNetwork {
   NeuralNetwork(std::string model_path, bool use_gpu, unsigned int batch_size);
   ~NeuralNetwork();
   void set_batch_size(unsigned int batch_size);
+  torch::Tensor get_value(WMChess* wm_chess);
 };
