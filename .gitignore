@@ -165,3 +165,4 @@ cython_debug/
 /summary_log
 
 /analysis
+/wandb_log

@@ -93,7 +93,7 @@ class Leaner:
             self.nnet.save_model()
             self.nnet.save_model('models', "best_checkpoint")
 
-        for itr in range(1, self.num_iters + 1):
+        for itr in range(20, self.num_iters + 1):
             print("ITER :: {}".format(itr))
 
             # self play in parallel
@@ -294,9 +294,9 @@ class Leaner:
             best_move = int(np.argmax(np.array(list(prob))))
 
             # execute move
-            wm_chess.execute_move(best_move)
+            wm_chess.execute_move(wm_chess.get_move_from_index(best_move))
             if show:
-                self.wm_chess_gui.execute_move(player_index, best_move)
+                self.wm_chess_gui.execute_move(player_index, wm_chess.get_move_from_index(best_move))
 
             # check game status
             ended, winner = wm_chess.get_game_status()
