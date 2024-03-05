@@ -53,6 +53,9 @@ cmake .. -DCMAKE_PREFIX_PATH=/home/husky/Downloads/libtorch-cxx11-abi-shared-wit
 # 崩潰日志
 # 1. txt位置修改
 
+# swig -c++ -python example.i
+# python setup.py build_ext --inplace
+
 # Run
 cd ../test
 python learner_test.py train # train model
