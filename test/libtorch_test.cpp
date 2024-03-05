@@ -10,8 +10,8 @@ int main() {
   std::cout << wm_chess.get_origin_board() << std:: endl;
 
 
-  NeuralNetwork nn("../test/models/checkpoint.pt", false, 1);
-  torch::Tensor v = nn.get_value(&wm_chess);
+  NeuralNetwork nn("../models/checkpoint.pt", true, 1);
+  float v = nn.get_value(&wm_chess);
   
   std::cout << v << std::endl;
 }

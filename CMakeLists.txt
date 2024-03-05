@@ -30,8 +30,6 @@ include_directories(${PYTHON_INCLUDE_PATH})
 include_directories(./src)
 aux_source_directory(./src SOURCES)
 
-
-
 # swig
 if(WRAP_LIB)
     set_property(SOURCE ./src/library.i PROPERTY CPLUSPLUS ON)
@@ -43,7 +41,7 @@ endif()
 # unit test
 if(UNIT_TEST)
     add_library(test_lib ${SOURCES})
-    target_link_libraries(test_lib ${TORCH_LIBRARIES})
+    target_link_libraries(test_lib ${TORCH_LIBRARIES} pthread)
 
     add_executable(thread_pool_test ./test/thread_pool_test.cpp)
     target_link_libraries(thread_pool_test test_lib)

@@ -32,7 +32,7 @@ public:
 
   inline std::vector<std::vector<int>> get_distance(){ 
     if (this -> distance.size() == 0){
-        this->distance = read_from_file("../src/distance.txt");
+        this->distance = read_from_file("/home/husky/Desktop/CPPZero/src/distance.txt");
     }
     return this->distance; 
     }
