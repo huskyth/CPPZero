@@ -146,7 +146,7 @@ void NeuralNetwork::infer() {
   }
 }
 
-  torch::Tensor NeuralNetwork::get_value(WMChess* wm_chess){
+  float NeuralNetwork::get_value(WMChess* wm_chess){
 
     int n = wm_chess->get_n();
 
@@ -199,7 +199,7 @@ void NeuralNetwork::infer() {
   torch::Tensor v_batch =
       result->elements()[1].toTensor().toType(torch::kFloat32).to(at::kCPU);
     
-  return v_batch;
+  return v_batch.item().toFloat();
 
   }
 

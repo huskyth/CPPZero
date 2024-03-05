@@ -27,7 +27,7 @@ def tuple_2d_to_numpy_2d(tuple_2d):
 if __name__ == "__main__":
     policy_value_net = neural_network.NeuralNetWorkWrapper(config['lr'], config['l2'], config['num_layers'],
                                                            config['num_channels'], config['n'], 72, False, False, None)
-    policy_value_net.load_model(str(ROOT_PATH / "test/models"), "checkpoint")
+    policy_value_net.load_model(str(ROOT_PATH / "models"), "checkpoint")
     board = np.array([1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     temp = from_array_to_input_tensor(board)
     board_batch, last_action_batch, cur_player_batch = torch.tensor(temp
