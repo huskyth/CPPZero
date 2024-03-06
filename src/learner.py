@@ -13,9 +13,10 @@ from library import MCTS, WMChess, NeuralNetwork
 from neural_network import NeuralNetWorkWrapper
 from tensor_board_tool import MySummary
 
-from symmetry_creator import lr, tb
+from symmetry_creator import lr, tb_
 
 from policy_analysis_tool import AnalysisTool
+
 from wm_chess_gui import WMChessGUI
 
 
@@ -203,10 +204,8 @@ class Leaner:
             cur_player = wm_chess.get_current_color()
 
             sym = self.get_symmetries(board, prob, last_action, cur_player)
-            for b, p, a, c_p, is_up_down_flip, data_type in sym:
-                if is_up_down_flip:
-                    assert c_p == -cur_player
-                train_examples.append([b, a, c_p, p, is_up_down_flip, data_type])
+            for b, p, a, c_p, data_type in sym:
+                train_examples.append([b, a, c_p, p, data_type])
 
             # dirichlet noise
             legal_moves = list(wm_chess.get_legal_moves())
@@ -237,7 +236,7 @@ class Leaner:
             if ended == 1:
                 # TODO://draw to check
                 # b, last_action, cur_player, p, v, data_type
-                temp = [(x[0], x[1], x[2], x[3], x[2] * winner * -1 if x[4] else 1, x[5]) for x in train_examples]
+                temp = [(x[0], x[1], x[2], x[3], x[2] * winner, x[4]) for x in train_examples]
                 if data_analysis:
                     assert len(temp) % 4 == 0
                     for i in range(0, len(temp)):
@@ -311,18 +310,18 @@ class Leaner:
             player_index = -player_index
 
     def get_symmetries(self, board, pi, last_action, current_player):
-        ret = [(board, pi, last_action, current_player, False, "origin")]
+        ret = [(board, pi, last_action, current_player, "origin")]
         new_board, new_last_action, new_pi, new_current_player = \
             lr(board, last_action, pi, current_player)
-        ret.append((new_board, new_pi, new_last_action, new_current_player, False, "lr"))
+        ret.append((new_board, new_pi, new_last_action, new_current_player, "lr"))
 
         new_board, new_last_action, new_pi, new_current_player = \
-            tb(board, last_action, pi, current_player)
-        ret.append((new_board, new_pi, new_last_action, new_current_player, True, "tb"))
+            tb_(board, last_action, pi, current_player)
+        ret.append((new_board, new_pi, new_last_action, new_current_player, "tb"))
 
         new_board_1, new_last_action_1, new_pi_1, new_current_player_1 = \
             lr(new_board, new_last_action, new_pi, new_current_player)
-        ret.append((new_board_1, new_pi_1, new_last_action_1, new_current_player_1, True, "center"))
+        ret.append((new_board_1, new_pi_1, new_last_action_1, new_current_player_1, "center"))
         return ret
 
     def play_with_human(self, human_first=True, checkpoint_name="best_checkpoint"):

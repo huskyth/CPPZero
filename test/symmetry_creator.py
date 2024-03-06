@@ -1,9 +1,12 @@
 import copy
 
 import numpy as np
+import torch
 
 from common import MOVE_LIST, MOVE_TO_INDEX_DICT, ARRAY_TO_IMAGE, from_array_to_input_tensor
+from config import config
 from policy_analysis_tool import init_board
+from src import neural_network
 
 LEFT_RIGHT_POINT_MAP = {
     0: 0, 1: 3, 3: 1, 2: 2, 4: 8, 8: 4, 6: 10, 10: 6, 5: 9, 9: 5, 16: 16, 17: 18, 18: 17,
@@ -63,7 +66,7 @@ print()
 
 
 def lr(board, last_action, pi, current_player):
-    new_board = np.fliplr(board)
+    new_board =  np.ascontiguousarray(np.fliplr(board))
     assert id(board) != id(new_board)
     from_idx, to_idx = last_action
 
@@ -87,8 +90,8 @@ def lr(board, last_action, pi, current_player):
     return new_board, new_last_action, new_pi, new_current_player
 
 
-def tb(board, last_action, pi, current_player):
-    new_board = -np.flipud(board)
+def tb_(board, last_action, pi, current_player):
+    new_board = np.ascontiguousarray(np.flipud(board))
     assert id(board) != id(new_board)
 
     from_idx, to_idx = last_action
@@ -102,7 +105,7 @@ def tb(board, last_action, pi, current_player):
     t, b = np.array(TOP_ACTION_INDEX), np.array(BOTTOM_ACTION_INDEX)
     new_pi = copy.deepcopy(pi)
     new_pi[t], new_pi[b] = new_pi[b], new_pi[t]
-    new_current_player = -current_player
+    new_current_player = current_player
 
     new_from_idx, new_to_idx = new_last_action
     new_row, new_column = ARRAY_TO_IMAGE[new_from_idx]
@@ -114,10 +117,14 @@ def tb(board, last_action, pi, current_player):
 
 
 if __name__ == '__main__':
+    policy_value_net = neural_network.NeuralNetWorkWrapper(config['lr'], config['l2'], config['num_layers'],
+                                                           config['num_channels'], config['n'], 72, False, False, None)
+
     board = from_array_to_input_tensor(np.array(init_board()))
     last_action = (10, 8)
     current_player = -1
     pi = np.arange(0, 72)
+
     # new_board, new_last_action, new_pi, new_current_player = lr(board, last_action, pi, current_player)
     # print()
     #
@@ -125,31 +132,41 @@ if __name__ == '__main__':
     #     o, t = MOVE_LIST[pi[i]], MOVE_LIST[new_pi[i]]
     #     print(o, t)
 
-    # new_board, new_last_action, new_pi, new_current_player = tb(board, last_action, pi, current_player)
-    # print()
+    # new_board, new_last_action, new_pi, new_current_player = lr(board, last_action, pi, current_player)
     #
+    # state_1 = policy_value_net._data_convert(torch.tensor(new_board).unsqueeze(0),
+    #                                          torch.tensor(new_last_action).unsqueeze(0),
+    #                                          torch.tensor(new_current_player).unsqueeze(0))
+    #
+    # new_board_2, new_last_action_2, new_pi_2, new_current_player_2 = tb_(board, last_action, pi, current_player)
+    #
+    # state_2 = policy_value_net._data_convert(torch.tensor(new_board_2).unsqueeze(0),
+    #                                          torch.tensor(new_last_action_2).unsqueeze(0),
+    #                                          torch.tensor(new_current_player_2).unsqueeze(0))
+    # print()
+
     # for i in range(72):
     #     o, t = MOVE_LIST[pi[i]], MOVE_LIST[new_pi[i]]
     #     print(o, t)
 
-    new_board, new_last_action, new_pi, new_current_player = tb(board, last_action, pi, current_player)
+    new_board, new_last_action, new_pi, new_current_player = tb_(board, last_action, pi, current_player)
     new_board, new_last_action, new_pi, new_current_player = lr(new_board, new_last_action, new_pi, new_current_player)
 
     print()
-
-    for i in range(72):
-        o, t = MOVE_LIST[pi[i]], MOVE_LIST[new_pi[i]]
-        print(o, t)
-
-    print("*" * 100)
+    #
+    # for i in range(72):
+    #     o, t = MOVE_LIST[pi[i]], MOVE_LIST[new_pi[i]]
+    #     print(o, t)
+    #
+    # print("*" * 100)
     new_board_1, new_last_action_1, new_pi_1, new_current_player_1 = lr(board, last_action, pi, current_player)
-    new_board_1, new_last_action_1, new_pi_1, new_current_player_1 = tb(new_board_1, new_last_action_1, new_pi_1,
+    new_board_1, new_last_action_1, new_pi_1, new_current_player_1 = tb_(new_board_1, new_last_action_1, new_pi_1,
                                                                         new_current_player_1)
 
     print()
-
-    for i in range(72):
-        o, t = MOVE_LIST[pi[i]], MOVE_LIST[new_pi_1[i]]
-        print(o, t)
-
-    print()
+    #
+    # for i in range(72):
+    #     o, t = MOVE_LIST[pi[i]], MOVE_LIST[new_pi_1[i]]
+    #     print(o, t)
+    #
+    # print()
