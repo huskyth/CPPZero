@@ -60,6 +60,9 @@ class AnalysisTool:
         self.draw_last_move_chessmen()
 
     def draw_last_move_chessmen(self):
+        if self.last_move == (-1, -1):
+            self.draw_chessmen(self.board, True, f"{self.data_type}_image_last_{self.current_step}", "No Last")
+            return
         to_index, from_index = self.last_move[1], self.last_move[0]
         assert self.board[to_index] == - self.current_player
         assert self.board[from_index] == 0
@@ -93,7 +96,7 @@ class AnalysisTool:
             p, v = policy, value
         with open(str(self.work_path / f"{self.data_type}_value_{self.current_step}.txt"), 'w') as f:
             f.write(f"value is {v}")
-        self._bin_display(p.squeeze(0))
+        self._bin_display(p)
 
     def analysis(self, board, last_move, current_player, current_step, data_type, policy=None, value=None):
         self._set_origin_board(board)
@@ -104,7 +107,8 @@ class AnalysisTool:
         self._infer(last_move, current_player, policy, value)
         self._display()
 
-    def analysis_map_board(self, map_board, last_move, current_player, current_step, data_type, policy=None, value=None):
+    def analysis_map_board(self, map_board, last_move, current_player, current_step, data_type, policy=None,
+                           value=None):
         board = self._transfer(map_board)
         self.analysis(board, last_move, current_player, current_step, data_type, policy, value)
 

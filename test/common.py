@@ -140,7 +140,6 @@ def from_array_to_input_tensor(numpy_array):
 
 def from_tensor_to_input_array(map_tensor):
     assert len(map_tensor) == 7
-    assert isinstance(map_tensor, torch.Tensor)
     input_array = np.zeros(21)
     for i in range(7):
         for j in range(7):
