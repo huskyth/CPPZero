@@ -365,6 +365,8 @@ class Leaner:
             # check game status
             ended, winner = wm_chess.get_game_status()
             if ended == 1:
+                win_string = "HUMAN WIN" if winner == human_color else "ALPHA ZERO WIN"
+                self.wm_chess_gui.draw_end_string(win_string)
                 break
 
             # update tree search
@@ -373,7 +375,7 @@ class Leaner:
             # next player
             player_index = -player_index
 
-        print("HUMAN WIN" if winner == human_color else "ALPHA ZERO WIN")
+        print(win_string)
 
     def load_samples(self, folder="models", filename="checkpoint.example"):
         """load self.examples_buffer

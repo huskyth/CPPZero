@@ -200,6 +200,11 @@ class WMChessGUI:
             SCREEN_HEIGHT - CHESSMAN_HEIGHT * 1
         return x, y
 
+    def draw_end_string(self, string):
+        text_surface = self.font.render(string, True, (255, 255, 0))
+        self.screen.blit(text_surface, (500, 560))
+        pygame.display.update()
+
     def _draw_chessman(self):
         for index, point in enumerate(self.board):
             if point == 0:

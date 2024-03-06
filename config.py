@@ -34,7 +34,7 @@ config = {
     'use_wandb': False,
 
     # test
-    'human_color': 1                            # human player's color
+    'human_color': -1                            # human player's color
 }
 
 # action size

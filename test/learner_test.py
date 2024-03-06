@@ -20,8 +20,6 @@ if __name__ == "__main__":
     if sys.argv[1] == "train":
         alpha_zero.learn()
     elif sys.argv[1] == "play":
-        for i in range(10):
-            print("GAME: {}".format(i + 1))
-            alpha_zero.play_with_human(human_first=i % 2)
+        alpha_zero.play_with_human(human_first=True)
     elif sys.argv[1] == "self-play":
         alpha_zero.only_self_play()
